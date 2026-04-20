@@ -2,77 +2,87 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>খায়ের ভাইয়ের হিসাব</title>
     <style>
         body { font-family: sans-serif; background: #eef2f3; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 95vw; max-width: 900px; }
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1a73e8; margin-bottom: 15px; padding-bottom: 5px; }
         h1 { color: #1a73e8; font-size: 20px; margin: 0; }
-        .date { font-size: 14px; font-weight: bold; color: #555; }
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .section { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
-        .section-title { font-weight: bold; margin-bottom: 10px; display: block; color: #333; border-bottom: 1px solid #eee; }
         .row { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
-        label { font-size: 13px; }
         input { width: 100px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: right; }
         .total-box { background: #e8f0fe; padding: 10px; margin-top: 10px; border-radius: 5px; text-align: center; font-weight: bold; color: #1967d2; }
-        .footer { margin-top: 20px; display: flex; gap: 10px; align-items: center; }
-        #res_box { flex: 2; padding: 15px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; border: 2px solid #ddd; background: #fff; }
-        .btn-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        button { padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; }
-        .calc-btn { background: #1a73e8; }
-        .print-btn { background: #34a853; }
-        @media print { .btn-group { display: none; } }
+        .footer { margin-top: 20px; }
+        #res_box { padding: 15px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; border: 2px solid #ddd; background: #fff; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h1>খায়ের ভাইয়ের হিসাব</h1>
-        <div class="date" id="d"></div>
-    </div>
+    <div class="header"><h1>খায়ের ভাইয়ের হিসাব</h1><div id="d"></div></div>
     <div class="main-grid">
         <div class="section">
-            <span class="section-title">জমা হিসাব</span>
-            <div class="row"><label>Suhaina (1349)</label><input type="number" id="s1" oninput="run()"></div>
-            <div class="row"><label>Suhaina (456)</label><input type="number" id="s2" oninput="run()"></div>
-            <div class="row"><label>Unique</label><input type="number" id="u" oninput="run()"></div>
-            <div class="row"><label>Cash</label><input type="number" id="c" oninput="run()"></div>
+            <span style="font-weight:bold">জমা হিসাব</span>
+            <div class="row"><label>Suhaina (1349)</label><input type="number" id="s1" class="data" oninput="saveAndRun()"></div>
+            <div class="row"><label>Suhaina (456)</label><input type="number" id="s2" class="data" oninput="saveAndRun()"></div>
+            <div class="row"><label>Unique</label><input type="number" id="u" class="data" oninput="saveAndRun()"></div>
+            <div class="row"><label>Cash</label><input type="number" id="c" class="data" oninput="saveAndRun()"></div>
             <div class="total-box">Total জমা: <span id="tj">0</span></div>
         </div>
         <div class="section">
-            <span class="section-title">অনলাইন হিসাব</span>
-            <div class="row"><label>Online</label><input type="number" id="o" oninput="run()"></div>
-            <div class="row"><label>Charge</label><input type="number" id="ch" oninput="run()"></div>
-            <div class="row"><label>Ager</label><input type="number" id="a" oninput="run()"></div>
+            <span style="font-weight:bold">অনলাইন হিসাব</span>
+            <div class="row"><label>Online</label><input type="number" id="o" class="data" oninput="saveAndRun()"></div>
+            <div class="row"><label>Charge</label><input type="number" id="ch" class="data" oninput="saveAndRun()"></div>
+            <div class="row"><label>Ager</label><input type="number" id="a" class="data" oninput="saveAndRun()"></div>
             <div style="margin-top:38px" class="total-box">Total Online: <span id="to">0</span></div>
         </div>
     </div>
     <div class="footer">
-        <div id="res_box">হিসাব দেখতে বাটনে চাপুন</div>
-        <div class="btn-group">
-            <button class="calc-btn" onclick="show()">ফলাফল দেখুন</button>
-            <button class="print-btn" onclick="window.print()">Save PDF / Print</button>
-        </div>
+        <div id="res_box">হিসাব দেখুন...</div>
+        <button onclick="window.print()" style="background:#34a853; color:white; border:none; padding:10px; width:100%; border-radius:5px; cursor:pointer;">Save PDF / Print</button>
     </div>
 </div>
+
 <script>
-    document.getElementById('d').innerText = "তারিখ: " + new Date().toLocaleDateString('bn-BD', {year:'numeric', month:'long', day:'numeric'});
-    function run() {
-        let j = (Number(document.getElementById('s1').value)||0)+(Number(document.getElementById('s2').value)||0)+(Number(document.getElementById('u').value)||0)+(Number(document.getElementById('c').value)||0);
-        let o = (Number(document.getElementById('o').value)||0)+(Number(document.getElementById('ch').value)||0)+(Number(document.getElementById('a').value)||0);
-        document.getElementById('tj').innerText = j;
-        document.getElementById('to').innerText = o;
-        return {j, o};
+    document.getElementById('d').innerText = "তারিখ: " + new Date().toLocaleDateString('bn-BD');
+
+    // পেজ লোড হলে ডাটা লোড করা
+    window.onload = () => {
+        document.querySelectorAll('.data').forEach(input => {
+            input.value = localStorage.getItem(input.id) || "";
+        });
+        run();
+    };
+
+    // ডাটা সেভ করা এবং হিসাব করা
+    function saveAndRun() {
+        document.querySelectorAll('.data').forEach(input => {
+            localStorage.setItem(input.id, input.value);
+        });
+        run();
     }
-    function show() {
-        let r = run(); let d = r.j - r.o; let b = document.getElementById('res_box');
-        if(r.j > r.o) { b.style.color="#137333"; b.innerText="খায়ের ভাই পাবে: "+d+" টাকা"; }
-        else if(r.o > r.j) { b.style.color="#a50e0e"; b.innerText="আমি পাবো: "+Math.abs(d)+" টাকা"; }
+
+    function run() {
+        let s1 = Number(document.getElementById('s1').value) || 0;
+        let s2 = Number(document.getElementById('s2').value) || 0;
+        let u = Number(document.getElementById('u').value) || 0;
+        let c = Number(document.getElementById('c').value) || 0;
+        let o = Number(document.getElementById('o').value) || 0;
+        let ch = Number(document.getElementById('ch').value) || 0;
+        let a = Number(document.getElementById('a').value) || 0;
+
+        let j = s1 + s2 + u + c;
+        let onlineTotal = o + ch + a;
+        
+        document.getElementById('tj').innerText = j;
+        document.getElementById('to').innerText = onlineTotal;
+
+        let res = j - onlineTotal;
+        let b = document.getElementById('res_box');
+        if(j > onlineTotal) { b.style.color="#137333"; b.innerText="খায়ের ভাই পাবে: "+res+" টাকা"; }
+        else if(onlineTotal > j) { b.style.color="#a50e0e"; b.innerText="আমি পাবো: "+Math.abs(res)+" টাকা"; }
         else { b.innerText="হিসাব সমান সমান"; }
     }
 </script>
 </body>
 </html>
-"""
